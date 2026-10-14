@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<script>try{document.documentElement.dataset.mode=localStorage.getItem("draftstudio-hub-mode")==="light"?"light":"dark"}catch(e){document.documentElement.dataset.mode="dark"}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DraftStudio — Your gateway to drafting games</title>
+<meta name="description" content="DraftStudio: draft-simulators voor trading card games. Start met Hero Draft voor Flesh and Blood.">
+<link rel="icon" type="image/svg+xml" href="assets/draftstudio-icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=DM+Sans:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--peach:#FFB38A;--rose:#E77BB0;--bg:#0b0a14;--ink:#fff;--ink2:#c9c5ef;--mute:#a9a5cf;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:"DM Sans","Segoe UI",system-ui,sans-serif;background:var(--bg);
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+a{color:inherit;text-decoration:none}
+.bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+  background:radial-gradient(ellipse 50% 45% at 15% 12%,rgba(231,123,176,.18),transparent 70%),radial-gradient(ellipse 45% 45% at 90% 20%,rgba(255,179,138,.12),transparent 70%),
+  radial-gradient(ellipse 55% 45% at 70% 98%,rgba(231,123,176,.10),transparent 70%),radial-gradient(ellipse 45% 40% at 0% 90%,rgba(157,107,255,.10),transparent 70%),var(--bg)}
+.bgfx::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/48px 48px;
+  -webkit-mask:radial-gradient(ellipse 80% 70% at 50% 35%,#000,transparent);mask:radial-gradient(ellipse 80% 70% at 50% 35%,#000,transparent)}
+.bgfx img{position:absolute;width:120px;border-radius:9px;opacity:.11;box-shadow:0 12px 30px rgba(0,0,0,.6)}
+.grad{background:linear-gradient(100deg,var(--peach),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.kick{font:700 .8rem/1 "DM Sans";letter-spacing:.3em;text-transform:uppercase;color:var(--mute)}
+.btn{display:inline-flex;align-items:center;gap:10px;font:800 1rem/1 "Inter Tight",sans-serif;text-transform:uppercase;letter-spacing:.04em;padding:15px 22px;border-radius:12px;border:0;cursor:pointer;
+  color:var(--bg);background:linear-gradient(100deg,var(--peach),var(--rose));box-shadow:0 10px 26px -12px rgba(231,123,176,.7);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(231,123,176,.9)}
+.btn.ghost{background:rgba(255,255,255,.05);color:#fff;box-shadow:none;border:1px solid rgba(255,255,255,.2)}
+.btn:focus-visible,.nav a:focus-visible,.tile:focus-within{outline:2px solid var(--peach);outline-offset:3px}
+.chip{display:inline-flex;align-items:center;gap:8px;font:700 .72rem/1 "DM Sans";letter-spacing:.2em;text-transform:uppercase;border-radius:999px;padding:6px 12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:#bdb9dc}
+.chip.live::before{content:"●";color:#3dff8f}.chip.dev::before{content:"◌";color:var(--peach)}.chip.road::before{content:"✦";color:var(--rose)}
+.mk{display:block}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0}
+.brand{display:flex;align-items:center;gap:14px;font:900 1.35rem/1 "Inter Tight";letter-spacing:-.02em}
+.brand .mk{width:38px;height:38px;--mk-sw:4;--mk-cw:3.2}
+.nav nav{display:flex;align-items:center;gap:24px;font-weight:700;color:#d9d6f5}
+.lang-sw{display:inline-flex;border:1px solid rgba(255,255,255,.22);border-radius:8px;overflow:hidden}
+.lang-sw button{font:700 .8rem "DM Sans";letter-spacing:.06em;background:transparent;border:0;color:var(--mute);padding:6px 10px;cursor:pointer}
+.lang-sw button[aria-pressed="true"]{background:linear-gradient(100deg,var(--peach),var(--rose));color:var(--bg)}
+.hero{display:flex;align-items:center;gap:30px;padding:8px 0 24px}
+.hero .mk{width:118px;height:118px;flex:none;filter:drop-shadow(0 0 16px rgba(231,123,176,.25))}
+.hero .tx{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.word{margin:0;font:900 clamp(2.8rem,6vw,4.6rem)/.85 "Inter Tight";letter-spacing:-.05em}
+.tag{margin:0;font:700 clamp(.8rem,1.3vw,1.05rem)/1.3 "DM Sans";letter-spacing:.3em;text-transform:uppercase;color:#cfcbe8}
+.tag i{font-style:normal;color:var(--rose);letter-spacing:.1em}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px}.cta .btn{padding:12px 18px;font-size:.92rem}
+.cont{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-radius:14px;padding:14px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);margin-bottom:34px}
+.cont[hidden]{display:none}
+.cont .btn{padding:10px 16px;font-size:.85rem}
+h2{margin:0 0 6px;font:900 1.7rem/1 "Inter Tight";letter-spacing:-.03em;text-transform:uppercase}
+.sub{margin:0 0 14px;color:var(--ink2)}
+.tiles{display:grid;grid-template-columns:1.25fr 1.25fr 1fr;gap:22px}
+.tile{border-radius:18px;overflow:hidden;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12)}
+.tile.live{border:0;padding:1.5px;background:linear-gradient(135deg,var(--peach),var(--rose));box-shadow:0 20px 50px -24px rgba(231,123,176,.6)}
+.tile.live>*{background:#121022}.tile.live .shot{border-radius:16px 16px 0 0}.tile.live .tb{border-radius:0 0 16px 16px}
+.tile.road{border-style:dashed}
+.shot{position:relative;aspect-ratio:16/8;overflow:hidden;background:#151327;display:block}
+.shot img{width:100%;height:100%;object-fit:cover;display:block}
+.play{position:absolute;right:12px;bottom:12px;background:linear-gradient(100deg,var(--peach),var(--rose));color:var(--bg);font:800 .7rem "DM Sans";letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:7px}
+.pack i{position:absolute;width:34%;aspect-ratio:300/419;border-radius:8px;background:center/cover;filter:blur(1.5px) saturate(.7) brightness(.6)}
+.lock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:800 .85rem "DM Sans";letter-spacing:.12em;text-transform:uppercase;background:rgba(11,10,20,.78);border:1px solid rgba(255,179,138,.5);color:var(--peach);padding:10px 16px;border-radius:10px;white-space:nowrap}
+.tb{padding:16px 20px 18px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;flex:1}
+.tb h3{margin:4px 0 0;font:900 1.6rem/1 "Inter Tight";letter-spacing:-.03em;text-transform:uppercase}
+.tb p{margin:0;color:#d9d6f5;line-height:1.45}
+.tags{display:flex;gap:6px;flex-wrap:wrap}.tags span{font-size:.75rem;border-radius:6px;padding:4px 8px;background:rgba(255,255,255,.08);color:var(--ink2)}
+.tb .btn{margin-top:auto}
+.tile.road .tb{align-items:center;justify-content:center;text-align:center}
+.themes{margin-top:44px}
+.sl{position:relative}
+.sl-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px 2px 10px;scrollbar-width:none;outline:none}
+.sl-track::-webkit-scrollbar{display:none}
+.sl-track:focus-visible{outline:2px solid var(--peach);outline-offset:4px;border-radius:14px}
+.sl-item{flex:none;width:min(300px,78vw);margin:0;scroll-snap-align:start;border-radius:14px;padding:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);transition:transform .2s,border-color .2s}
+.sl-item:hover{transform:translateY(-3px);border-color:rgba(255,179,138,.55)}
+.sl-item img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:9px;background:#151327}
+.sl-item figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 4px 2px;font-size:.92rem}
+.dots{display:inline-flex;gap:3px}.dots i{width:9px;height:9px;border-radius:50%;display:block;box-shadow:0 0 0 1px rgba(0,0,0,.3)}
+.sl-btn{position:absolute;top:calc(50% - 30px);width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(11,10,20,.82);color:#fff;font:700 1.3rem/1 "DM Sans";cursor:pointer;display:grid;place-items:center;z-index:2;box-shadow:0 8px 20px -8px #000}
+.sl-btn:hover{border-color:var(--peach);color:var(--peach)}
+.sl-btn:focus-visible{outline:2px solid var(--peach);outline-offset:2px}
+.sl-btn[disabled]{opacity:0;pointer-events:none}
+.sl-prev{left:-14px}.sl-next{right:-14px}
+.sl-dots{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.sl-dots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;background:rgba(255,255,255,.25);cursor:pointer;transition:width .2s,background .2s}
+.sl-dots button[aria-current="true"]{width:26px;border-radius:5px;background:linear-gradient(100deg,var(--peach),var(--rose))}
+@media (hover:none){.sl-btn{display:none}}
+@media (prefers-reduced-motion:reduce){.sl-track{scroll-behavior:auto}.sl-item{transition:none}}
+.about{margin:56px 0 0;display:grid;grid-template-columns:1fr 1.4fr;gap:34px;align-items:start;border-top:1px solid rgba(255,255,255,.1);padding-top:34px}
+.about p{margin:0 0 12px;color:var(--ink2);line-height:1.6}
+footer{padding:44px 0 30px;color:#8f8bb5;font-size:.75rem;line-height:1.5;text-align:center}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(5,4,10,.86);display:grid;place-items:center;padding:24px}
+.lb[hidden]{display:none}
+.lb figure{margin:0;max-width:1000px;width:100%;border-radius:14px;padding:6px;background:linear-gradient(135deg,var(--peach),var(--rose))}
+.lb img{display:block;width:100%;border-radius:10px}
+.lb button{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px}
+@media (max-width:900px){.hero{flex-direction:column;text-align:left;align-items:flex-start;gap:16px}.hero .mk{width:84px;height:84px}.tiles{grid-template-columns:1fr}.about{grid-template-columns:1fr}.nav nav a{display:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+.brandrow{display:flex;align-items:center;gap:18px}
+.mode-sw{display:inline-flex;border:1px solid rgba(255,255,255,.22);border-radius:8px;overflow:hidden}
+.mode-sw button{font:700 .8rem "DM Sans";letter-spacing:.04em;background:transparent;border:0;color:var(--mute);padding:6px 10px;cursor:pointer}
+.mode-sw button[aria-pressed="true"]{background:linear-gradient(100deg,var(--peach),var(--rose));color:var(--bg)}
+
+/* ===== Lichte modus: Blueprint met gedempt lipstickrood ===== */
+html[data-mode="light"]{--peach:#B43D41;--rose:#B43D41;--bg:#ECE8E1;--ink:#1E1D1B;--ink2:#6d6a64;--mute:#6d6a64;color-scheme:light}
+html[data-mode="light"] body{background:#ECE8E1;color:#1E1D1B;font-family:"IBM Plex Mono",monospace}
+html[data-mode="light"] .bgfx{background:repeating-linear-gradient(90deg,transparent 0 119px,rgba(30,29,27,.08) 119px 120px),repeating-linear-gradient(0deg,transparent 0 119px,rgba(30,29,27,.06) 119px 120px),repeating-linear-gradient(90deg,rgba(30,29,27,.04) 0 1px,transparent 1px 24px),#ECE8E1!important}
+html[data-mode="light"] .bgfx::after{display:none}
+html[data-mode="light"] .bgfx img{opacity:0!important}
+html[data-mode="light"] .grad{background:none;-webkit-text-fill-color:#B43D41;color:#B43D41}
+html[data-mode="light"] .word,html[data-mode="light"] h2,html[data-mode="light"] .tb h3,html[data-mode="light"] .brand{font-family:"Inter Tight",sans-serif}
+html[data-mode="light"] .word{color:#1E1D1B;text-transform:uppercase;word-spacing:.15em}
+html[data-mode="light"] .tag{color:#6d6a64}
+html[data-mode="light"] .tag i{color:#B43D41}
+html[data-mode="light"] .kick{color:#6d6a64}
+html[data-mode="light"] .btn{background:#B43D41;color:#fff;border-radius:0;box-shadow:none}
+html[data-mode="light"] .btn:hover{box-shadow:none}
+html[data-mode="light"] .btn.ghost{background:transparent;color:#1E1D1B;border:1px solid #1E1D1B}
+html[data-mode="light"] .chip{border-color:#bdb7ad;color:#6d6a64;background:transparent;border-radius:0}
+html[data-mode="light"] .chip.live::before{color:#4f8a5b}
+html[data-mode="light"] .chip.dev::before,html[data-mode="light"] .chip.road::before{color:#B43D41}
+html[data-mode="light"] .nav{border-bottom:1px solid #1E1D1B;margin-bottom:14px}
+html[data-mode="light"] .nav nav,html[data-mode="light"] .brand{color:#1E1D1B}
+html[data-mode="light"] .lang-sw{border-color:#1E1D1B;border-radius:0}
+html[data-mode="light"] .lang-sw button{color:#6d6a64}
+html[data-mode="light"] .lang-sw button[aria-pressed="true"]{background:#1E1D1B;color:#ECE8E1}
+html[data-mode="light"] .hero .mk{filter:none}
+html[data-mode="light"] .mk #dsg stop{stop-color:#1E1D1B}
+html[data-mode="light"] .mk rect{fill:#ECE8E1;stroke:#1E1D1B}
+html[data-mode="light"] .mk path:last-child{fill:#B43D41}
+html[data-mode="light"] h2{color:#1E1D1B;word-spacing:.15em}
+html[data-mode="light"] .sub,html[data-mode="light"] .tb p,html[data-mode="light"] .about p{color:#6d6a64}
+html[data-mode="light"] .tile{background:#EFEBE4!important;border:1px solid #1E1D1B!important;border-radius:0!important;box-shadow:none!important}
+html[data-mode="light"] .tile.live{padding:0!important;box-shadow:inset 0 0 0 1px #B43D41!important}
+html[data-mode="light"] .tile.live>*{background:#EFEBE4!important}
+html[data-mode="light"] .tile.live .shot,html[data-mode="light"] .tile.live .tb{border-radius:0}
+html[data-mode="light"] .shot{border-bottom:1px solid #1E1D1B}
+html[data-mode="light"] .shot img{filter:saturate(.75) sepia(.2)}
+html[data-mode="light"] .tile .tb h3{color:#1E1D1B;word-spacing:.15em}
+html[data-mode="light"] .tags span{background:transparent;border:1px solid #bdb7ad;color:#6d6a64;border-radius:0}
+html[data-mode="light"] .play{background:#B43D41;color:#fff;border-radius:0}
+html[data-mode="light"] .lock{background:#EFEBE4;border-color:#B43D41;color:#B43D41;border-radius:0}
+html[data-mode="light"] .cont{background:#EFEBE4;border-color:#bdb7ad;border-radius:0}
+html[data-mode="light"] .sl-item{background:#EFEBE4;border-color:#1E1D1B;border-radius:0}
+html[data-mode="light"] .sl-item img{border-radius:0;filter:saturate(.8) sepia(.12)}
+html[data-mode="light"] .sl-btn{background:#EFEBE4;color:#1E1D1B;border-color:#1E1D1B;border-radius:0}
+html[data-mode="light"] .sl-dots button{background:#bdb7ad}
+html[data-mode="light"] .sl-dots button[aria-current="true"]{background:#B43D41;border-radius:0}
+html[data-mode="light"] .about{border-top-color:#1E1D1B}
+html[data-mode="light"] footer{color:#6d6a64}
+html[data-mode="light"] .chip,html[data-mode="light"] .play,html[data-mode="light"] .lock,html[data-mode="light"] .kick,html[data-mode="light"] .tag,html[data-mode="light"] .lang-sw button,html[data-mode="light"] .tags span{font-family:"IBM Plex Mono",monospace!important}
+html[data-mode="light"] .btn{font-family:"Inter Tight",sans-serif!important}
+html[data-mode="light"] .mode-sw{border-color:#1E1D1B;border-radius:0}
+html[data-mode="light"] .mode-sw button{color:#6d6a64;font-family:"IBM Plex Mono",monospace}
+html[data-mode="light"] .mode-sw button[aria-pressed="true"]{background:#1E1D1B;color:#ECE8E1}
+html[data-mode="light"] .lb figure{background:#1E1D1B;border-radius:0}html[data-mode="light"] .lb img{border-radius:0}
+
+</style>
+</head>
+<body>
+<div class="bgfx" aria-hidden="true">
+  <img src="assets/cards/aurora.jpg" alt="" style="left:2%;top:12%;transform:rotate(-12deg)">
+  <img src="assets/cards/dorinthea.jpg" alt="" style="right:4%;top:7%;transform:rotate(10deg)">
+  <img src="assets/cards/kayo.jpg" alt="" style="right:6%;top:46%;transform:rotate(-6deg)">
+  <img src="assets/cards/levia.jpg" alt="" style="left:3%;top:64%;transform:rotate(8deg)">
+</div>
+<div class="wrap">
+  <header class="nav">
+    <div class="brandrow"><a class="brand" href="./" aria-label="DraftStudio"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="dsg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB38A"/><stop offset="1" stop-color="#E77BB0"/></linearGradient></defs>
+<path d="M50 6 L94 50 L50 94 L6 50 Z" fill="none" stroke="url(#dsg)" style="stroke-width:var(--mk-sw,3)" stroke-linejoin="round"/>
+<rect x="39.5" y="31" width="21" height="33" rx="3" transform="rotate(-14 50 75)" fill="#0b0a14" stroke="#fff" style="stroke-width:var(--mk-cw,2.4)"/>
+<rect x="39.5" y="31" width="21" height="33" rx="3" transform="rotate(14 50 75)" fill="#0b0a14" stroke="#fff" style="stroke-width:var(--mk-cw,2.4)"/>
+<rect x="39.5" y="31" width="21" height="33" rx="3" fill="#0b0a14" stroke="#fff" style="stroke-width:var(--mk-cw,2.4)"/>
+<path d="M50 41 l2.2 6.3 l6.3 2.2 l-6.3 2.2 l-2.2 6.3 l-2.2 -6.3 l-6.3 -2.2 l6.3 -2.2 Z" fill="#FFB38A"/></svg><span>DRAFT<span class="grad">STUDIO</span></span></a><span class="mode-sw" role="group" data-ta="mode" aria-label="Weergave"><button type="button" data-mode="dark" data-t="m_dark">Donker</button><button type="button" data-mode="light" data-t="m_light">Licht</button></span></div>
+    <nav><a href="#simulators" data-t="nav_sims">Simulators</a><a href="#over" data-t="nav_about">Over</a>
+      <span class="lang-sw" role="group" aria-label="Taal / Language"><button type="button" data-lang="nl">NL</button><button type="button" data-lang="en">EN</button></span></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="dsg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB38A"/><stop offset="1" stop-color="#E77BB0"/></linearGradient></defs>
+<path d="M50 6 L94 50 L50 94 L6 50 Z" fill="none" stroke="url(#dsg)" style="stroke-width:var(--mk-sw,3)" stroke-linejoin="round"/>
+<rect x="39.5" y="31" width="21" height="33" rx="3" transform="rotate(-14 50 75)" fill="#0b0a14" stroke="#fff" style="stroke-width:var(--mk-cw,2.4)"/>
+<rect x="39.5" y="31" width="21" height="33" rx="3" transform="rotate(14 50 75)" fill="#0b0a14" stroke="#fff" style="stroke-width:var(--mk-cw,2.4)"/>
+<rect x="39.5" y="31" width="21" height="33" rx="3" fill="#0b0a14" stroke="#fff" style="stroke-width:var(--mk-cw,2.4)"/>
+<path d="M50 41 l2.2 6.3 l6.3 2.2 l-6.3 2.2 l-2.2 6.3 l-2.2 -6.3 l-6.3 -2.2 l6.3 -2.2 Z" fill="#FFB38A"/></svg>
+      <div class="tx">
+        <span class="kick">Multi-TCG draft platform</span>
+        <h1 class="word">DRAFT<span class="grad">STUDIO</span></h1>
+        <p class="tag">Your gateway to drafting games <i>· · ·</i></p>
+        <div class="cta"><a class="btn" href="#simulators" data-t="cta_pick">Kies een simulator ↓</a><button class="btn ghost" type="button" id="demoBtn" data-t="cta_demo">▶ Bekijk de demo</button></div>
+      </div>
+    </section>
+    <div class="cont" id="cont" hidden><span><b data-t="cont_lbl">Verder waar je was:</b> <span id="contTxt"></span></span><a class="btn heroLink" href="hero-draft/" data-t="cont_btn">Verder →</a></div>
+    <section id="simulators">
+      <h2>Simulators</h2>
+      <p class="sub" data-t="sims_sub">Kies je draft. Thema, taal en statistieken neem je overal mee.</p>
+      <div class="tiles">
+        <article class="tile live">
+          <a class="shot heroLink" href="hero-draft/" aria-label="Hero Draft"><img id="heroShot" src="assets/poster-nl.jpg" alt="Hero Draft in actie"><span class="play" data-t="play">▶ Demo bij hover</span></a>
+          <div class="tb"><span class="chip live">Live</span><h3>Hero Draft</h3>
+            <p data-t="hero_txt">Draft je heroes om de beurt, met class-regel, bans en bescherming. Op één scherm, online of tegen de randomizer.</p>
+            <div class="tags"><span>Flesh and Blood</span><span data-t="tag_seats">2–8 spelers</span><span>Online</span></div>
+            <a class="btn heroLink" href="hero-draft/" data-t="hero_btn">Speel Hero Draft →</a></div>
+        </article>
+        <article class="tile dev">
+          <div class="shot pack" aria-hidden="true">
+            <i style="left:40%;top:18%;transform:rotate(-10deg);background-image:url(assets/cards/aurora.jpg)"></i>
+            <i style="left:54%;top:21%;transform:rotate(-2deg);background-image:url(assets/cards/kayo.jpg)"></i>
+            <i style="left:68%;top:24%;transform:rotate(6deg);background-image:url(assets/cards/levia.jpg)"></i>
+            <span class="lock" data-t="soon">🔒 Binnenkort</span></div>
+          <div class="tb"><span class="chip dev" data-t="dev">In ontwikkeling</span><h3>Card Draft</h3>
+            <p data-t="card_txt">Booster draft met echte sets: kies welke sets in de pool komen, hoeveel packs je opent en draft je deck bij elkaar.</p>
+            <div class="tags"><span data-t="tag_sets">Sets naar keuze</span><span data-t="tag_packs">Packs &amp; picks</span><span>Multi-TCG</span></div></div>
+        </article>
+        <article class="tile road">
+          <div class="tb"><span class="chip road" data-t="road">Op de roadmap</span><h3 style="margin-top:10px" data-t="road_h">Sealed · Cube · andere TCG's</h3>
+            <p data-t="road_txt">Meer formats en spellen volgen. DraftStudio groeit mee met de community.</p></div>
+        </article>
+      </div>
+    </section>
+    <section class="themes" id="themas" aria-labelledby="themesH">
+      <span class="kick" data-t="themes_k">Thema's</span>
+      <h2 id="themesH" style="margin-top:10px" data-t="themes_h">Speel in jouw stijl</h2>
+      <p class="sub" data-t="themes_sub">Een greep uit de beschikbare thema's. Kies je favoriet in Hero Draft.</p>
+      <div class="sl">
+        <button class="sl-btn sl-prev" type="button" aria-controls="slTrack" data-ta="prev" aria-label="Vorige thema's">‹</button>
+        <div class="sl-track" id="slTrack" tabindex="0" role="region" aria-roledescription="carrousel" data-ta="track" aria-label="Voorbeelden van thema's"><figure class="sl-item"><img src="assets/themes/neon.jpg" alt="Hero Draft in het thema Neon Underworld" loading="lazy" width="800" height="500"><figcaption><b>Neon Underworld</b><span class="dots"><i style="background:#FF2E88"></i><i style="background:#29E6FF"></i><i style="background:#FFE600"></i></span></figcaption></figure><figure class="sl-item"><img src="assets/themes/bpdark.jpg" alt="Hero Draft in het thema Blueprint Dark" loading="lazy" width="800" height="500"><figcaption><b>Blueprint Dark</b><span class="dots"><i style="background:#FF5A36"></i><i style="background:#E6E1D8"></i><i style="background:#3a3d44"></i></span></figcaption></figure><figure class="sl-item"><img src="assets/themes/summer.jpg" alt="Hero Draft in het thema 90s Summer" loading="lazy" width="800" height="500"><figcaption><b>90s Summer</b><span class="dots"><i style="background:#FF6B35"></i><i style="background:#00A6A6"></i><i style="background:#FFD23F"></i></span></figcaption></figure><figure class="sl-item"><img src="assets/themes/casino.jpg" alt="Hero Draft in het thema Casino Noir" loading="lazy" width="800" height="500"><figcaption><b>Casino Noir</b><span class="dots"><i style="background:#C9A227"></i><i style="background:#8B1E2D"></i><i style="background:#F1E7C8"></i></span></figcaption></figure><figure class="sl-item"><img src="assets/themes/sakura.jpg" alt="Hero Draft in het thema Sakura Duel" loading="lazy" width="800" height="500"><figcaption><b>Sakura Duel</b><span class="dots"><i style="background:#D97B93"></i><i style="background:#29233D"></i><i style="background:#4D5873"></i></span></figcaption></figure><figure class="sl-item"><img src="assets/themes/terminal.jpg" alt="Hero Draft in het thema Old Terminal" loading="lazy" width="800" height="500"><figcaption><b>Old Terminal</b><span class="dots"><i style="background:#8fe0a2"></i><i style="background:#3e7a4f"></i><i style="background:#0b170f"></i></span></figcaption></figure><figure class="sl-item"><img src="assets/themes/monster.jpg" alt="Hero Draft in het thema Monster Mayhem" loading="lazy" width="800" height="500"><figcaption><b>Monster Mayhem</b><span class="dots"><i style="background:#7B2CBF"></i><i style="background:#72E06A"></i><i style="background:#FF5C8A"></i></span></figcaption></figure><figure class="sl-item"><img src="assets/themes/toy.jpg" alt="Hero Draft in het thema Toybox" loading="lazy" width="800" height="500"><figcaption><b>Toybox</b><span class="dots"><i style="background:#F4D35E"></i><i style="background:#E8483E"></i><i style="background:#2D6FA3"></i></span></figcaption></figure></div>
+        <button class="sl-btn sl-next" type="button" aria-controls="slTrack" data-ta="next" aria-label="Volgende thema's">›</button>
+      </div>
+      <div class="sl-dots" id="slDots" role="group" aria-label="Kies een thema-voorbeeld"></div>
+    </section>
+    <section class="about" id="over">
+      <div><span class="kick" data-t="about_k">Over DraftStudio</span><h2 style="margin-top:12px" data-t="about_h">Gemaakt door spelers</h2></div>
+      <div><p data-t="about_p1">DraftStudio is een gratis fan-project.</p>
+      <p data-t="about_p2">Je instellingen, thema en statistieken blijven op je eigen apparaat. Online drafts worden na 30 dagen automatisch opgeruimd.</p></div>
+    </section>
+  </main>
+  <footer id="legal"></footer>
+</div>
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Demo"><button class="btn ghost" type="button" id="lbClose" aria-label="Sluiten">✕</button><figure><img id="lbImg" alt="Demo van Hero Draft"></figure></div>
+<script>
+// Waar staat Hero Draft? Op GitHub Pages / eigen domein: de map hero-draft/. Elders (bv. een losse preview): de gepubliceerde app.
+const HERO_FALLBACK="https://claude.ai/artifact/XMDh6YfVUdDu5PBcBJJjoB";
+const local=/^(file:)$/.test(location.protocol)||/github\.io$|draftstudio\.|localhost|127\.0\.0\.1/.test(location.hostname);
+if(!local) document.querySelectorAll(".heroLink").forEach(a=>{a.href=HERO_FALLBACK;a.target="_blank";a.rel="noopener"});
+const T={en:{m_dark:"Dark",m_light:"Light",nav_sims:"Simulators",nav_about:"About",cta_pick:"Choose a simulator ↓",cta_demo:"▶ Watch the demo",cont_lbl:"Pick up where you left off:",cont_btn:"Continue →",
+ sims_sub:"Pick your draft. Your theme, language and stats come along everywhere.",play:"▶ Demo on hover",hero_txt:"Draft your heroes in turns, with the class rule, bans and protection. On one screen, online or against the randomizer.",
+ tag_seats:"2–8 players",hero_btn:"Play Hero Draft →",soon:"🔒 Coming soon",dev:"In development",card_txt:"Booster draft with real sets: choose which sets go into the pool, how many packs you open, and draft your deck.",
+ tag_sets:"Sets of your choice",tag_packs:"Packs & picks",road:"On the roadmap",road_h:"Sealed · Cube · other TCGs",road_txt:"More formats and games will follow. DraftStudio grows with the community.",
+ themes_k:"Themes",themes_h:"Play in your style",themes_sub:"A selection of the available themes. Pick your favourite in Hero Draft.",
+ about_k:"About DraftStudio",about_h:"Made by players",about_p1:"DraftStudio is a free fan project.",
+ about_p2:"Your settings, theme and stats stay on your own device. Online drafts are cleaned up automatically after 30 days."}};
+const NL={};document.querySelectorAll("[data-t]").forEach(e=>NL[e.dataset.t]=e.textContent);
+let LANG=(()=>{try{const v=localStorage.getItem("fab-hero-draft-lang");if(v==="nl"||v==="en")return v}catch(e){}return /^nl/i.test(navigator.language||"nl")?"nl":"en"})();
+const LEGAL='<b>© 2026 DraftStudio.</b> Hero Draft is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios. Card images © Legend Story Studios.';
+function apply(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll("[data-t]").forEach(e=>{const k=e.dataset.t;e.textContent=LANG==="en"&&T.en[k]?T.en[k]:NL[k]});
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===LANG)));
+  const AL={mode:["Weergave","Display"],prev:["Vorige thema's","Previous themes"],next:["Volgende thema's","Next themes"],track:["Voorbeelden van thema's","Theme previews"]};
+  document.querySelectorAll("[data-ta]").forEach(e=>e.setAttribute("aria-label",AL[e.dataset.ta][LANG==="en"?1:0]));
+  document.querySelectorAll(".sl-item img").forEach(i=>{const n=i.closest("figure").querySelector("b").textContent;i.alt=LANG==="en"?`Hero Draft in the ${n} theme`:`Hero Draft in het thema ${n}`});
+  document.getElementById("heroShot").src=`assets/poster-${LANG}.jpg`;
+  document.getElementById("legal").innerHTML=LEGAL;
+  cont();
+}
+function setMode(m){document.documentElement.dataset.mode=m;try{localStorage.setItem("draftstudio-hub-mode",m)}catch(e){}document.querySelectorAll("button[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)))}
+document.querySelectorAll("button[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+setMode(document.documentElement.dataset.mode||"dark");
+document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{LANG=b.dataset.lang;try{localStorage.setItem("fab-hero-draft-lang",LANG)}catch(e){}apply()});
+// "Verder waar je was": alleen als er al drafts op dit apparaat zijn gespeeld (zelfde opslag als Hero Draft)
+function cont(){
+  let h=[];try{h=JSON.parse(localStorage.getItem("fab-hero-draft-history")||"[]")}catch(e){}
+  let started=false;try{const s=JSON.parse(localStorage.getItem("fab-hero-draft-v5")||"null");started=!!(s&&s.started)}catch(e){}
+  const el=document.getElementById("cont");
+  if(!h.length&&!started){el.hidden=true;return}
+  const d=h.length?new Date(h[0].ts).toLocaleString(LANG==="en"?"en-GB":"nl-NL",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
+  document.getElementById("contTxt").textContent=started?(LANG==="en"?"Hero Draft · a draft is in progress":"Hero Draft · er loopt nog een draft"):`Hero Draft · ${LANG==="en"?"last draft":"laatste draft"} ${d}`;
+  el.hidden=false;
+}
+// demo bij hover / focus / tikken
+const shot=document.getElementById("heroShot");
+const playOn=()=>{shot.src=`assets/demo-${LANG}.webp`}, playOff=()=>{shot.src=`assets/poster-${LANG}.jpg`};
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(!reduce){const a=shot.closest("a");a.addEventListener("mouseenter",playOn);a.addEventListener("mouseleave",playOff);a.addEventListener("focus",playOn);a.addEventListener("blur",playOff);
+  if(matchMedia("(hover: none)").matches){const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?playOn():playOff()),{threshold:.6});io.observe(a)}}
+// demo groot bekijken
+const lb=document.getElementById("lb");
+document.getElementById("demoBtn").onclick=()=>{document.getElementById("lbImg").src=`assets/demo-${LANG}.webp`;lb.hidden=false;document.getElementById("lbClose").focus()};
+const closeLb=()=>{lb.hidden=true;document.getElementById("lbImg").removeAttribute("src")};
+document.getElementById("lbClose").onclick=closeLb;lb.onclick=e=>{if(e.target===lb)closeLb()};document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!lb.hidden)closeLb()});
+// ---------- thema-slider: pijlen, stipjes, vegen; schuift zelf door tot iemand ermee bezig is ----------
+(function(){
+  const track=document.getElementById("slTrack"), items=[...track.children], dotsBox=document.getElementById("slDots");
+  const prev=document.querySelector(".sl-prev"), next=document.querySelector(".sl-next");
+  const step=()=>items[0].getBoundingClientRect().width+16;
+  const idx=()=>Math.round(track.scrollLeft/step());
+  const maxIdx=()=>Math.max(0,Math.round((track.scrollWidth-track.clientWidth)/step()));
+  items.forEach((it,i)=>{const b=document.createElement("button");b.type="button";b.setAttribute("aria-label",it.querySelector("b").textContent);b.onclick=()=>{stop();go(i)};dotsBox.appendChild(b)});
+  const dots=[...dotsBox.children];
+  function go(i){track.scrollTo({left:Math.min(i,maxIdx())*step()})}
+  function sync(){const i=Math.min(idx(),items.length-1);dots.forEach((d,k)=>d.setAttribute("aria-current",String(k===i)));prev.disabled=track.scrollLeft<4;next.disabled=track.scrollLeft>=track.scrollWidth-track.clientWidth-4}
+  let t=null, stopped=matchMedia("(prefers-reduced-motion: reduce)").matches, paused=false, visible=false;
+  function tick(){if(stopped||paused||!visible||document.hidden)return;const i=idx();go(i>=maxIdx()?0:i+1)}
+  function start(){if(!t&&!stopped)t=setInterval(tick,3500)}
+  function stop(){stopped=true;clearInterval(t);t=null}
+  prev.onclick=()=>{stop();go(Math.max(0,idx()-1))};
+  next.onclick=()=>{stop();go(idx()+1)};
+  track.addEventListener("scroll",()=>requestAnimationFrame(sync),{passive:true});
+  ["pointerdown","wheel","touchstart","keydown"].forEach(ev=>track.addEventListener(ev,stop,{passive:true}));
+  [track,prev,next,dotsBox].forEach(el=>{el.addEventListener("mouseenter",()=>paused=true);el.addEventListener("mouseleave",()=>paused=false);el.addEventListener("focusin",()=>paused=true);el.addEventListener("focusout",()=>paused=false)});
+  track.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){e.preventDefault();go(idx()+1)}if(e.key==="ArrowLeft"){e.preventDefault();go(Math.max(0,idx()-1))}});
+  new IntersectionObserver(es=>es.forEach(e=>visible=e.isIntersecting),{threshold:.4}).observe(track);
+  window.addEventListener("resize",sync);sync();start();
+})();
+apply();
+</script>
+</body>
+</html>
